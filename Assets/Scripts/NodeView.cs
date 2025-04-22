@@ -61,7 +61,11 @@ public class NodeView : MonoBehaviour {
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.transform.gameObject == tile) {
                     if (Input.GetMouseButtonDown(0)) {
-                        minesweeper.RevealNode(node);
+                        if (viewType == ViewType.closed) {
+                            minesweeper.RevealNode(node);
+                        } else if (viewType == ViewType.open) {
+                            minesweeper.ClearFlagged(node);
+                        }
                     } else {
                         minesweeper.FlagNode(node);
                     }

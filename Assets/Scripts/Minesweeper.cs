@@ -13,6 +13,7 @@ public class Minesweeper : MonoBehaviour {
         graphView = graph.GetComponent<GraphView>();
     }
 
+    // reveals a given node n
     public void RevealNode(Node n) {
         // change viewtype & color
         NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
@@ -40,7 +41,8 @@ public class Minesweeper : MonoBehaviour {
             Debug.Log("mines.ToString(): " + mines.ToString());
         } else if (mines == 0 && n.nodeType == NodeType.open) {
             // reveal mines surrounding this square
-            RevealZeros(n);
+            // RevealZeros(n);
+            RevealNeighbors(n);
         }
     }
 
@@ -53,16 +55,37 @@ public class Minesweeper : MonoBehaviour {
         nview.DrawText(nview.viewType == ViewType.flagged ? "F" : "");
     }
 
+
     public void RevealZeros(Node n) {
         if (n.CountMines() != 0 || n.nodeType != NodeType.open) {
             return;
         }
 
+        RevealNeighbors(n);
+    }
+
+    // When you click on a open cell, if the number of flags matches the number of mines, clear all cells bordering the clicked node
+    public void ClearFlagged(Node n) {
+        int flagCt = 0;
         foreach (Node neighbor in n.neighbors) {
             NodeView nview = graphView.nodeViews[neighbor.xIndex, neighbor.yIndex];
-            if (nview.viewType == ViewType.closed) {
-                RevealNode(neighbor);
+            if (nview.viewType == ViewType.flagged) {
+                flagCt++;
             }
+        }
+        if (flagCt == n.CountMines()) {
+            RevealNeighbors(n);
+        }
+    }
+
+    // reveals every closed neighbor to a given node n
+    public void RevealNeighbors(Node n) {
+        foreach (Node neighbor in n.neighbors) {
+            NodeView nview = graphView.nodeViews[neighbor.xIndex, neighbor.yIndex];
+            if (nview.viewType == ViewType.flagged || nview.viewType == ViewType.open) {
+                continue;
+            }
+            RevealNode(neighbor);
         }
     }
 }
