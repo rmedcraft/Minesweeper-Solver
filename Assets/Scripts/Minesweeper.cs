@@ -15,6 +15,9 @@ public class Minesweeper : MonoBehaviour {
     public void RevealNode(Node n) {
         // change viewtype & color
         NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
+        if (nview.viewType == ViewType.flagged) {
+            return;
+        }
         nview.viewType = ViewType.open;
         graphView.ColorNode(n);
 
@@ -29,6 +32,12 @@ public class Minesweeper : MonoBehaviour {
             // reveal mines surrounding this square
             RevealZeros(n);
         }
+    }
+
+    public void FlagNode(Node n) {
+        NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
+        nview.viewType = nview.viewType == ViewType.closed ? ViewType.flagged : ViewType.closed; // toggle between closed and flagged
+        nview.DrawText(nview.viewType == ViewType.flagged ? "F" : "");
     }
 
     public void RevealZeros(Node n) {

@@ -54,13 +54,17 @@ public class NodeView : MonoBehaviour {
         // handles click detection for each individual node with a raycaster
         // cant use the OnMouseDown method because we are using tile as the nodeview object.
         // you can only change a node state manually if the game is paused
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             // out hit means to store the output in the hit object
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.transform.gameObject == tile) {
-                    minesweeper.RevealNode(node);
+                    if (Input.GetMouseButtonDown(0)) {
+                        minesweeper.RevealNode(node);
+                    } else {
+                        minesweeper.FlagNode(node);
+                    }
                 }
             }
         }
@@ -74,4 +78,5 @@ public class NodeView : MonoBehaviour {
 public enum ViewType {
     open = 0,
     closed = 1,
+    flagged = 2
 }
