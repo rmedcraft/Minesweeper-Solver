@@ -5,7 +5,8 @@ using UnityEngine;
 public class Minesweeper : MonoBehaviour {
     Graph graph;
     GraphView graphView;
-    Node start; // For keeping track of where the first click is
+
+    bool hasClicked = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Init(Graph graph) {
         this.graph = graph;
@@ -17,6 +18,15 @@ public class Minesweeper : MonoBehaviour {
         NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
         if (nview.viewType == ViewType.flagged) {
             return;
+        }
+
+
+        // ensures the first click isnt a mine
+        if (!hasClicked) {
+            int numMines = (int)(graph.GetWidth() * graph.GetHeight() * 0.2);
+
+            graph.GenerateBoard(numMines, n);
+            hasClicked = true;
         }
         nview.viewType = ViewType.open;
         graphView.ColorNode(n);

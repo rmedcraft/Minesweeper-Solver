@@ -4,7 +4,8 @@ using UnityEngine;
 public class Graph : MonoBehaviour {
     // Translates 1's and 0's from MapData.cs to an array of nodes
     public Node[,] nodes; //Array of nodes
-    public List<Node> walls = new List<Node>();
+    public List<Node> nodeList = new List<Node>();
+    int nodeIndex = 1;
 
     int[,] m_mapData;
     int width = 12;
@@ -32,30 +33,43 @@ public class Graph : MonoBehaviour {
         return height;
     }
 
-    public void GenerateBoard(int mines) {
-        // for (int r = 0; r < width; r++) {
-        //     for (int c = 0; c < height; c++) {
-        //         NodeType nodeType = NodeType.open;
-        //         if (Random.Range(0, 5) == 0) {
-        //             nodeType = NodeType.mine;
-        //         }
-        //         nodes[r, c] = new Node(r, c, nodeType);
+    public void GenerateBoard(int mines, Node start) {
+        // old solution, O(n) with repeated randomization
+        // for (int i = 0; i < mines; i++) {
+        //     int randRow = Random.Range(0, width);
+        //     int randCol = Random.Range(0, height);
+
+        //     Node currentNode = nodes[randRow, randCol];
+        //     // keep generating random numbers until we get a pos without a mine & that isnt bordering the first click
+        //     while (currentNode.nodeType == NodeType.mine || start == currentNode) {
+        //         randRow = Random.Range(0, width);
+        //         randCol = Random.Range(0, height);
         //     }
+
+        //     nodes[randRow, randCol].nodeType = NodeType.mine;
         // }
 
+        // new solution, O(n) no repeated randomization
+        // this method needs to be really efficient if its being called after the first click
+        Swap(nodeList, 0, nodeList.IndexOf(start));
+        foreach (Node n in start.neighbors) {
+            Swap(nodeList, nodeIndex, nodeList.IndexOf(n));
+            nodeIndex++;
+        }
         for (int i = 0; i < mines; i++) {
-            int randRow = Random.Range(0, width);
-            int randCol = Random.Range(0, height);
-
-            // keep generating random numbers until we get a pos without a mine
-            while (nodes[randRow, randCol].nodeType == NodeType.mine) {
-                randRow = Random.Range(0, width);
-                randCol = Random.Range(0, height);
-            }
-
-            nodes[randRow, randCol].nodeType = NodeType.mine;
+            int randIndex = Random.Range(nodeIndex, nodeList.Count);
+            nodeList[randIndex].nodeType = NodeType.mine;
+            Swap(nodeList, nodeIndex, randIndex);
+            nodeIndex++;
         }
     }
+
+    void Swap(List<Node> list, int i1, int i2) {
+        Node temp = list[i1];
+        list[i1] = list[i2];
+        list[i2] = temp;
+    }
+
 
     public void Init() {
         nodes = new Node[width, height];
@@ -63,18 +77,17 @@ public class Graph : MonoBehaviour {
         for (int r = 0; r < width; r++) {
             for (int c = 0; c < height; c++) {
                 nodes[r, c] = new Node(r, c, NodeType.open);
+                nodeList.Add(nodes[r, c]);
             }
         }
 
-        int numMines = (int)(width * height * 0.2);
-        GenerateBoard(numMines);
-
-        // count the mines bordering each node after all nodes are declared as a mine or not
+        // declare the neighbor list
         for (int r = 0; r < width; r++) {
             for (int c = 0; c < height; c++) {
                 nodes[r, c].neighbors = GetNeighbors(r, c, nodes);
             }
         }
+
     }
 
     public int CountMines() {
