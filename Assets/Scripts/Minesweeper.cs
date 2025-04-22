@@ -46,6 +46,9 @@ public class Minesweeper : MonoBehaviour {
 
     public void FlagNode(Node n) {
         NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
+        if (nview.viewType == ViewType.open) {
+            return;
+        }
         nview.viewType = nview.viewType == ViewType.closed ? ViewType.flagged : ViewType.closed; // toggle between closed and flagged
         nview.DrawText(nview.viewType == ViewType.flagged ? "F" : "");
     }

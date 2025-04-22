@@ -53,7 +53,7 @@ public class Graph : MonoBehaviour {
         // this method needs to be really efficient if its being called after the first click
         Swap(nodeList, 0, nodeList.IndexOf(start));
         foreach (Node n in start.neighbors) {
-            Swap(nodeList, nodeIndex, nodeList.IndexOf(n));
+            Swap(nodeList, nodeIndex, nodeList.IndexOf(n, nodeIndex));
             nodeIndex++;
         }
         for (int i = 0; i < mines; i++) {
