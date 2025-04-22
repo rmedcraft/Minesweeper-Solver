@@ -1,3 +1,5 @@
+// BoardSolver.cs contains the algorithm for solving the board by itself
+// Minesweeper.cs contains all the game logic for minesweeper
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;

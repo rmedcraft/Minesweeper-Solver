@@ -68,17 +68,11 @@ public class Graph : MonoBehaviour {
 
         int numMines = (int)(width * height * 0.2);
         GenerateBoard(numMines);
-        Debug.Log("numMines: " + numMines);
-
-        Debug.Log("actual mines: " + CountMines());
-
 
         // count the mines bordering each node after all nodes are declared as a mine or not
         for (int r = 0; r < width; r++) {
             for (int c = 0; c < height; c++) {
-
                 nodes[r, c].neighbors = GetNeighbors(r, c, nodes);
-                nodes[r, c].CountMines();
             }
         }
     }
@@ -103,7 +97,8 @@ public class Graph : MonoBehaviour {
         foreach (Vector2 dir in allDirections) {
             int newX = x + (int)dir.x;
             int newY = y + (int)dir.y;
-            if (IsWithinBounds(newX, newY) && nodeArray[newX, newY] != null && nodeArray[newX, newY].nodeType == NodeType.open) {
+            if (IsWithinBounds(newX, newY) && nodeArray[newX, newY] != null) {
+                Debug.Log("Neighbor added to Node[" + x + ", " + y + "]");
                 neighbors.Add(nodeArray[newX, newY]);
             }
         }

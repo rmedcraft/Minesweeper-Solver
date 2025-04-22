@@ -15,7 +15,6 @@ public class Node {
     public Vector3 position;
 
     public List<Node> neighbors = new List<Node>();
-    int mineCt = 0;
     public Node prev = null;
     public Node(int xIndex, int yIndex, NodeType nodeType) {
         this.xIndex = xIndex;
@@ -28,12 +27,15 @@ public class Node {
         prev = null;
     }
 
-    public void CountMines() {
+    public int CountMines() {
+        int mineCt = 0;
         foreach (Node n in neighbors) {
+            Debug.Log("Neighbor NodeType: " + n.nodeType);
             if (n.nodeType == NodeType.mine) {
                 mineCt++;
             }
         }
+        return mineCt;
     }
 }
 

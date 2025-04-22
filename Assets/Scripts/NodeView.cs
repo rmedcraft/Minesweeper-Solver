@@ -4,16 +4,36 @@ public class NodeView : MonoBehaviour {
     public GameObject tile;
     public float borderSize = 0.01f;
 
+    TextMesh text;
     Node node;
     public ViewType viewType = ViewType.closed;
-    public void Init(Node node) {
+
+    Minesweeper minesweeper;
+    public void Init(Node node, Minesweeper minesweeper) {
         if (tile != null) {
             this.node = node;
+            this.minesweeper = minesweeper;
             // gameObject refers to the NodeView gameObject
             // gameObject is kinda like saying this.something() in every other programming language
             tile.name = "Node (" + node.position.x + ", " + node.position.z + ")";
             tile.transform.position = node.position;
             tile.transform.localScale = new Vector3(1f - borderSize, 1f, 1f - borderSize);
+
+            // Adds a hitbox to each tile, necessary for click detection
+            tile.AddComponent<BoxCollider>();
+
+            // all for adding text to the nodeview
+            GameObject t = new GameObject();
+            text = t.AddComponent<TextMesh>();
+            text.text = "";
+            text.fontSize = 40;
+            text.characterSize = 0.2f;
+            text.color = Color.black;
+
+            text.transform.position = node.position;
+
+            text.transform.eulerAngles = new Vector3(90, 0, 0);
+            text.anchor = TextAnchor.MiddleCenter;
         } else {
             Debug.LogWarning("Tile does not exist!");
         }
@@ -40,10 +60,14 @@ public class NodeView : MonoBehaviour {
             // out hit means to store the output in the hit object
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.transform.gameObject == tile) {
-                    viewType = ViewType.open;
+                    minesweeper.RevealNode(node);
                 }
             }
         }
+    }
+
+    public void DrawText(string s) {
+        text.text = s;
     }
 }
 

@@ -1,0 +1,46 @@
+// Minesweeper.cs contains all the game logic for minesweeper
+// BoardSolver.cs contains the algorithm for solving the board by itself
+using UnityEngine;
+
+public class Minesweeper : MonoBehaviour {
+    Graph graph;
+    GraphView graphView;
+    Node start; // For keeping track of where the first click is
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public void Init(Graph graph) {
+        this.graph = graph;
+        graphView = graph.GetComponent<GraphView>();
+    }
+
+    public void RevealNode(Node n) {
+        // change viewtype & color
+        NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
+        nview.viewType = ViewType.open;
+        graphView.ColorNode(n);
+
+        // display the number of bordering mines if the bordering mines is >0
+        int mines = n.CountMines();
+        Debug.Log(mines);
+
+        if (mines != 0 && n.nodeType != NodeType.mine) {
+            nview.DrawText(mines.ToString());
+            Debug.Log("mines.ToString(): " + mines.ToString());
+        } else if (mines == 0 && n.nodeType == NodeType.open) {
+            // reveal mines surrounding this square
+            RevealZeros(n);
+        }
+    }
+
+    public void RevealZeros(Node n) {
+        if (n.CountMines() != 0 || n.nodeType != NodeType.open) {
+            return;
+        }
+
+        foreach (Node neighbor in n.neighbors) {
+            NodeView nview = graphView.nodeViews[neighbor.xIndex, neighbor.yIndex];
+            if (nview.viewType == ViewType.closed) {
+                RevealNode(neighbor);
+            }
+        }
+    }
+}

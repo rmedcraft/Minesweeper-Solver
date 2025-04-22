@@ -3,6 +3,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
     public Graph graph;
     public BoardSolver boardSolver;
+    public Minesweeper minesweeper;
     public int startx = 0;
     public int starty = 0;
     public float timeStep = 0.1f;
@@ -12,10 +13,17 @@ public class GameController : MonoBehaviour {
             graph.Init();
             GraphView graphView = graph.GetComponent<GraphView>();
             if (graphView != null) {
-                graphView.Init(graph);
+                if (minesweeper != null) {
+                    minesweeper.Init(graph);
+                    graphView.Init(graph, minesweeper);
+                } else {
+                    Debug.Log("GameController Error: No Minesweeper object found");
+                }
             } else {
-                Debug.Log("No graph view is found");
+                Debug.Log("GameController Error: No graph view is found");
             }
+
+
             // if (graph.IsWithinBounds(startx, starty) && pathfinder != null) {
             //     Node startNode = graph.nodes[startx, starty];
             //     Node goalNode = graph.nodes[goalx, goaly];
