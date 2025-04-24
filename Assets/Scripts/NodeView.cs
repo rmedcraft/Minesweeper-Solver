@@ -9,10 +9,10 @@ public class NodeView : MonoBehaviour {
     public ViewType viewType = ViewType.closed;
 
     Minesweeper minesweeper;
-    public void Init(Node node, Minesweeper minesweeper) {
+    public void Init(Node node, GameController gameController) {
         if (tile != null) {
             this.node = node;
-            this.minesweeper = minesweeper;
+            this.minesweeper = gameController.GetMinesweeper();
             // gameObject refers to the NodeView gameObject
             // gameObject is kinda like saying this.something() in every other programming language
             tile.name = "Node (" + node.position.x + ", " + node.position.z + ")";

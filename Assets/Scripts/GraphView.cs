@@ -8,7 +8,7 @@ public class GraphView : MonoBehaviour {
     public Color mineColor = Color.red;
     public NodeView[,] nodeViews;
 
-    public void Init(Graph graph, Minesweeper minesweeper) {
+    public void Init(Graph graph, GameController gameController) {
         if (graph == null) {
             Debug.LogWarning("Graph does not exist u stupid idiot");
             return;
@@ -20,19 +20,14 @@ public class GraphView : MonoBehaviour {
             NodeView nodeView = instance.GetComponent<NodeView>();
             Debug.Log("Position: " + n.position.x + ", " + n.position.z);
             if (nodeView != null) {
-                nodeView.Init(n, minesweeper);
+                nodeView.Init(n, gameController);
                 nodeViews[n.xIndex, n.yIndex] = nodeView;
                 nodeView.ColorNode(closedColor);
-                // if (n.nodeType == NodeType.mine) {
-                //     nodeView.ColorNode(mineColor);
-                // } else {
-                //     nodeView.ColorNode(openColor);
-                // }
             }
         }
     }
 
-    
+
 
     public void ColorNodes(List<Node> nodes, Color color) {
         foreach (Node n in nodes) {

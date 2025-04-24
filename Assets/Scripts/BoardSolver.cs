@@ -6,7 +6,6 @@ using System.Linq;
 using System.Collections;
 
 public class BoardSolver : MonoBehaviour {
-    Node start;
 
     Graph graph;
     GraphView graphView;
@@ -21,34 +20,29 @@ public class BoardSolver : MonoBehaviour {
     public bool isComplete;
     public int iterations;
 
-    public void Init(Graph graph, GraphView graphView, Node start, Node goal) {
-        if (start == null || goal == null || graphView == null || graph == null) {
-            Debug.LogWarning("BoardSolver error: Missing components.");
-            return;
-        }
-        if (start.nodeType == NodeType.mine || goal.nodeType == NodeType.mine) {
-            Debug.LogWarning("BoardSolver error: Make sure start and goal nodes are open");
-            return;
-        }
+    public void Init(Graph graph) {
+        // if (graph == null) {
+        //     Debug.LogWarning("BoardSolver error: Missing graph.");
+        //     return;
+        // }
 
-        this.graph = graph;
-        this.graphView = graphView;
-        this.start = start;
+        // this.graph = graph;
+        // this.graphView = graph.GetComponent<GraphView>();
 
-        frontierNodes = new Queue<Node>();
-        frontierNodes.Enqueue(start);
-        exploreNodes = new List<Node>();
+        // frontierNodes = new Queue<Node>();
+        // frontierNodes.Enqueue(start);
+        // exploreNodes = new List<Node>();
 
-        for (int r = 0; r < graph.GetWidth(); r++) {
-            for (int c = 0; c < graph.GetHeight(); c++) {
-                this.graph.nodes[r, c].Reset();
-            }
-        }
+        // for (int r = 0; r < graph.GetWidth(); r++) {
+        //     for (int c = 0; c < graph.GetHeight(); c++) {
+        //         this.graph.nodes[r, c].Reset();
+        //     }
+        // }
 
-        ShowColors(graphView, start, goal);
+        // ShowColors(graphView, start, goal);
 
-        isComplete = false;
-        iterations = 0;
+        // isComplete = false;
+        // iterations = 0;
     }
 
     public void ShowColors(GraphView graphView, Node start, Node goal) {

@@ -6,13 +6,16 @@ using UnityEngine;
 public class Minesweeper : MonoBehaviour {
     Graph graph;
     GraphView graphView;
-
+    UIManager ui;
+    BoardSolver boardSolver;
     bool hasClicked = false; // determines if the player has clicked yet to generate the board on the first click
     bool isPlaying = true; // doesnt allow user input if the game isnt going on
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void Init(Graph graph) {
+    public void Init(Graph graph, GameController gameController) {
         this.graph = graph;
         graphView = graph.GetComponent<GraphView>();
+        this.ui = gameController.GetUI();
+        this.boardSolver = gameController.GetBoardSolver();
     }
 
     // reveals a given node n
@@ -42,17 +45,33 @@ public class Minesweeper : MonoBehaviour {
         // player clicked a mine & lost
         if (n.nodeType == NodeType.mine) {
             isPlaying = false;
+            ui.resultText.text = "You Lose!";
             RevealMines();
             return;
         }
         // player clicked a non-mine & keeps playing
         if (mines != 0 && n.nodeType != NodeType.mine) {
             nview.DrawText(mines.ToString());
-            Debug.Log("mines.ToString(): " + mines.ToString());
         } else if (mines == 0 && n.nodeType == NodeType.open) {
             // reveal mines surrounding this square
             RevealNeighbors(n);
         }
+        
+        isPlaying = !CheckWin();
+        if (!isPlaying) {
+            ui.resultText.text = "You Won!";
+        }
+    }
+
+    // returns true if the player won the game, returns false if the game is still going
+    public bool CheckWin() {
+        foreach (Node n in graph.nodes) {
+            NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
+            if (n.nodeType == NodeType.open && nview.viewType != ViewType.open) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void RevealMines() {
