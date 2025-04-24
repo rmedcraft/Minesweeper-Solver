@@ -5,8 +5,6 @@ public class GameController : MonoBehaviour {
     public BoardSolver boardSolver;
     public Minesweeper minesweeper;
     public UIManager ui;
-    public int startx = 0;
-    public int starty = 0;
     public float timeStep = 0.1f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -46,6 +44,10 @@ public class GameController : MonoBehaviour {
 
     public UIManager GetUI() {
         return ui;
+    }
+
+    public Graph GetGraph() {
+        return graph;
     }
 
     // Update is called once per frame

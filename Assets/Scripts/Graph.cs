@@ -8,8 +8,8 @@ public class Graph : MonoBehaviour {
     int nodeIndex = 1;
 
     int[,] m_mapData;
-    int width = 12;
-    int height = 7;
+    int width = 30;
+    int height = 20;
 
     public static readonly Vector2[] allDirections = {
         new Vector2(1f, 1f),
@@ -111,7 +111,6 @@ public class Graph : MonoBehaviour {
             int newX = x + (int)dir.x;
             int newY = y + (int)dir.y;
             if (IsWithinBounds(newX, newY) && nodeArray[newX, newY] != null) {
-                Debug.Log("Neighbor added to Node[" + x + ", " + y + "]");
                 neighbors.Add(nodeArray[newX, newY]);
             }
         }

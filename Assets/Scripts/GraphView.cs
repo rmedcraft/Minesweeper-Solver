@@ -18,7 +18,6 @@ public class GraphView : MonoBehaviour {
         foreach (Node n in graph.nodes) {
             GameObject instance = Instantiate(nodeViewPrefab, Vector3.zero, Quaternion.identity);
             NodeView nodeView = instance.GetComponent<NodeView>();
-            Debug.Log("Position: " + n.position.x + ", " + n.position.z);
             if (nodeView != null) {
                 nodeView.Init(n, gameController);
                 nodeViews[n.xIndex, n.yIndex] = nodeView;
