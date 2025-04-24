@@ -1,12 +1,14 @@
 // Minesweeper.cs contains all the game logic for minesweeper
 // BoardSolver.cs contains the algorithm for solving the board by itself
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Minesweeper : MonoBehaviour {
     Graph graph;
     GraphView graphView;
 
-    bool hasClicked = false;
+    bool hasClicked = false; // determines if the player has clicked yet to generate the board on the first click
+    bool isPlaying = true; // doesnt allow user input if the game isnt going on
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Init(Graph graph) {
         this.graph = graph;
@@ -29,21 +31,39 @@ public class Minesweeper : MonoBehaviour {
             graph.GenerateBoard(numMines, n);
             hasClicked = true;
         }
+
+
         nview.viewType = ViewType.open;
         graphView.ColorNode(n);
 
         // display the number of bordering mines if the bordering mines is >0
         int mines = n.CountMines();
-        Debug.Log(mines);
 
+        // player clicked a mine & lost
+        if (n.nodeType == NodeType.mine) {
+            isPlaying = false;
+            RevealMines();
+            return;
+        }
+        // player clicked a non-mine & keeps playing
         if (mines != 0 && n.nodeType != NodeType.mine) {
             nview.DrawText(mines.ToString());
             Debug.Log("mines.ToString(): " + mines.ToString());
         } else if (mines == 0 && n.nodeType == NodeType.open) {
             // reveal mines surrounding this square
-            // RevealZeros(n);
             RevealNeighbors(n);
         }
+    }
+
+    public void RevealMines() {
+        List<Node> mineList = new List<Node>();
+        foreach (Node n in graph.nodes) {
+            if (n.nodeType == NodeType.mine) {
+                mineList.Add(n);
+            }
+        }
+
+        graphView.ColorNodes(mineList, graphView.mineColor);
     }
 
     public void FlagNode(Node n) {
@@ -53,15 +73,6 @@ public class Minesweeper : MonoBehaviour {
         }
         nview.viewType = nview.viewType == ViewType.closed ? ViewType.flagged : ViewType.closed; // toggle between closed and flagged
         nview.DrawText(nview.viewType == ViewType.flagged ? "F" : "");
-    }
-
-
-    public void RevealZeros(Node n) {
-        if (n.CountMines() != 0 || n.nodeType != NodeType.open) {
-            return;
-        }
-
-        RevealNeighbors(n);
     }
 
     // When you click on a open cell, if the number of flags matches the number of mines, clear all cells bordering the clicked node
@@ -87,5 +98,9 @@ public class Minesweeper : MonoBehaviour {
             }
             RevealNode(neighbor);
         }
+    }
+
+    public bool GetPlaying() {
+        return isPlaying;
     }
 }

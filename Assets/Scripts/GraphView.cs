@@ -32,6 +32,8 @@ public class GraphView : MonoBehaviour {
         }
     }
 
+    
+
     public void ColorNodes(List<Node> nodes, Color color) {
         foreach (Node n in nodes) {
             if (n != null) {
