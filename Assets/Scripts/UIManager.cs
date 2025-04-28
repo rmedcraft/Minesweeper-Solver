@@ -63,5 +63,23 @@ public class UIManager : MonoBehaviour {
         if (resultText != null) {
             resultText.text = "";
         }
+        if (gameController != null) {
+            startSolveText.text = "Start Solving";
+            gameController.boardSolver.isSolving = false;
+            gameController.minesweeper.isPlaying = true;
+            gameController.minesweeper.hasClicked = false;
+
+            gameController.boardSolver.frontierNodes.Clear();
+            foreach (Node n in gameController.graph.nodes) {
+                GraphView graphView = gameController.graph.GetComponent<GraphView>();
+                NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
+                nview.viewType = ViewType.closed;
+                nview.ColorNode(graphView.closedColor);
+                nview.DrawText("");
+            }
+
+
+            gameController.graph.Reset();
+        }
     }
 }

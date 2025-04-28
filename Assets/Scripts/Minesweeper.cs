@@ -8,7 +8,7 @@ public class Minesweeper : MonoBehaviour {
     GraphView graphView;
     UIManager ui;
     BoardSolver boardSolver;
-    bool hasClicked = false; // determines if the player has clicked yet to generate the board on the first click
+    public bool hasClicked = false; // determines if the player has clicked yet to generate the board on the first click
     bool won = false;
     public bool isPlaying = true; // doesnt allow user input if the game isnt going on
     // Start is called once before the first execution of Update after the MonoBehaviour is created

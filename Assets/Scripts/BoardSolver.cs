@@ -48,6 +48,11 @@ public class BoardSolver : MonoBehaviour {
                 yield return new WaitForSeconds(timeStep);
             }
 
+            if (!minesweeper.hasClicked) {
+                minesweeper.RevealNode(graph.nodeList[Random.Range(0, graph.nodeList.Count)]);
+                continue;
+            }
+
             Node node = frontierNodes.Dequeue();
             int mines = node.CountMines();
 

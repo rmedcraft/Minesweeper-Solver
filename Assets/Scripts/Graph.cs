@@ -82,9 +82,8 @@ public class Graph : MonoBehaviour {
             // find a random node to replace it
             int randIndex = Random.Range(nodeIndex, nodeList.Count);
             nodeList[randIndex].nodeType = NodeType.mine;
-
-            // swap them in the list
-            Swap(nodeList, randIndex, nodeList.IndexOf(start));
+            Swap(nodeList, nodeIndex, randIndex);
+            nodeIndex++;
         }
         foreach (Node n in start.neighbors) {
             // only do anything if the node is a mine
@@ -98,13 +97,19 @@ public class Graph : MonoBehaviour {
             // find a random mine to replace it
             int randIndex = Random.Range(nodeIndex, nodeList.Count);
             nodeList[randIndex].nodeType = NodeType.mine;
-
-            // swap the new mine & the starting node
-            Swap(nodeList, randIndex, nodeList.IndexOf(n));
+            Swap(nodeList, randIndex, nodeIndex);
+            nodeIndex++;
         }
     }
 
-
+    public void Reset() {
+        for (int i = 0; i < nodeIndex; i++) {
+            nodeList[i].nodeType = NodeType.open;
+        }
+        nodeIndex = 0;
+        int numMines = (int)(GetWidth() * GetHeight() * 0.2);
+        GenerateBoard(numMines);
+    }
     public void Init() {
         nodes = new Node[width, height];
 
