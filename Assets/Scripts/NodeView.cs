@@ -12,7 +12,7 @@ public class NodeView : MonoBehaviour {
     public void Init(Node node, GameController gameController) {
         if (tile != null) {
             this.node = node;
-            this.minesweeper = gameController.GetMinesweeper();
+            this.minesweeper = gameController.minesweeper;
             // gameObject refers to the NodeView gameObject
             // gameObject is kinda like saying this.something() in every other programming language
             tile.name = "Node (" + node.position.x + ", " + node.position.z + ")";
@@ -26,8 +26,8 @@ public class NodeView : MonoBehaviour {
             GameObject t = new GameObject();
             text = t.AddComponent<TextMesh>();
             text.text = "";
-            text.fontSize = 40;
-            text.characterSize = 0.2f;
+            text.fontSize = 80;
+            text.characterSize = 0.1f;
             text.color = Color.black;
 
             text.transform.position = node.position;

@@ -14,8 +14,8 @@ public class Minesweeper : MonoBehaviour {
     public void Init(Graph graph, GameController gameController) {
         this.graph = graph;
         graphView = graph.GetComponent<GraphView>();
-        this.ui = gameController.GetUI();
-        this.boardSolver = gameController.GetBoardSolver();
+        this.ui = gameController.ui;
+        this.boardSolver = gameController.boardSolver;
     }
 
     // reveals a given node n
@@ -52,11 +52,12 @@ public class Minesweeper : MonoBehaviour {
         // player clicked a non-mine & keeps playing
         if (mines != 0 && n.nodeType != NodeType.mine) {
             nview.DrawText(mines.ToString());
+            boardSolver.frontierNodes.Enqueue(n);
         } else if (mines == 0 && n.nodeType == NodeType.open) {
             // reveal mines surrounding this square
             RevealNeighbors(n);
         }
-        
+
         isPlaying = !CheckWin();
         if (!isPlaying) {
             ui.resultText.text = "You Won!";

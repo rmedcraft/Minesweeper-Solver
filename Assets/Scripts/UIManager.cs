@@ -6,6 +6,8 @@ public class UIManager : MonoBehaviour {
     public GameController gameController;
     public TextMeshProUGUI resultText;
 
+    public GameObject startSolveButton;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         if (resultText != null) {
@@ -39,6 +41,12 @@ public class UIManager : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+    }
+
+    public void OnStartSearch() {
+        if (gameController != null) {
+            StartCoroutine(gameController.boardSolver.SearchRoutine());
+        }
     }
 
     public void OnReset() {

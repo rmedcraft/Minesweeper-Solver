@@ -9,67 +9,67 @@ public class BoardSolver : MonoBehaviour {
 
     Graph graph;
     GraphView graphView;
-    Queue<Node> frontierNodes;
-    List<Node> exploreNodes;
+    public Queue<Node> frontierNodes;
 
-    public Color startColor = Color.green;
-    public Color goalColor = Color.red;
     public Color frontierColor = Color.magenta;
-    public Color exploreColor = Color.blue;
 
     public bool isComplete;
     public int iterations;
 
-    public void Init(Graph graph) {
-        // if (graph == null) {
-        //     Debug.LogWarning("BoardSolver error: Missing graph.");
-        //     return;
-        // }
+    Minesweeper minesweeper;
 
-        // this.graph = graph;
-        // this.graphView = graph.GetComponent<GraphView>();
-
-        // frontierNodes = new Queue<Node>();
-        // frontierNodes.Enqueue(start);
-        // exploreNodes = new List<Node>();
-
-        // for (int r = 0; r < graph.GetWidth(); r++) {
-        //     for (int c = 0; c < graph.GetHeight(); c++) {
-        //         this.graph.nodes[r, c].Reset();
-        //     }
-        // }
-
-        // ShowColors(graphView, start, goal);
-
-        // isComplete = false;
-        // iterations = 0;
-    }
-
-    public void ShowColors(GraphView graphView, Node start, Node goal) {
-        if (graphView == null || start == null || goal == null) {
+    public void Init(Graph graph, GameController gameController) {
+        if (graph == null || gameController == null) {
+            Debug.LogWarning("BoardSolver error: Missing components.");
             return;
         }
 
-        NodeView startNodeView = graphView.nodeViews[start.xIndex, start.yIndex];
+        this.graph = graph;
+        this.graphView = graph.GetComponent<GraphView>();
+        this.minesweeper = gameController.minesweeper;
 
-        if (frontierNodes != null) {
-            graphView.ColorNodes(frontierNodes.ToList(), frontierColor);
-        }
-        if (exploreNodes != null) {
-            graphView.ColorNodes(exploreNodes, exploreColor);
-        }
-
-        if (startNodeView != null) {
-            startNodeView.ColorNode(startColor);
-        } else {
-            Debug.LogWarning("StartNodeView does not exist");
-        }
+        frontierNodes = new Queue<Node>();
+        isComplete = false;
     }
 
     public IEnumerator SearchRoutine(float timeStep = 0.1f) {
         yield return null;
         while (!isComplete) {
+            Node node = frontierNodes.Dequeue();
+            int mines = node.CountMines();
 
+            List<Node> closed = new List<Node>();
+            List<Node> open = new List<Node>();
+            List<Node> flagged = new List<Node>();
+            foreach (Node n in node.neighbors) {
+                NodeView nview = graphView.nodeViews[n.xIndex, n.yIndex];
+                if (nview.viewType == ViewType.flagged) {
+                    flagged.Add(n);
+                }
+                if (nview.viewType == ViewType.open) {
+                    open.Add(n);
+                }
+                if (nview.viewType == ViewType.closed) {
+                    closed.Add(n);
+                }
+            }
+
+            if (closed.Count + flagged.Count == mines) {
+                foreach (Node n in closed) {
+                    minesweeper.FlagNode(n);
+                }
+            } else if (flagged.Count == mines) {
+                foreach (Node n in closed) {
+                    minesweeper.RevealNode(n);
+                }
+            } else {
+                frontierNodes.Enqueue(node);
+            }
+
+            NodeView nodeView = graphView.nodeViews[node.xIndex, node.yIndex];
+            nodeView.ColorNode(frontierColor);
+            yield return new WaitForSeconds(timeStep);
+            nodeView.ColorNode(nodeView.viewType == ViewType.open ? graphView.openColor : graphView.closedColor);
         }
     }
 }

@@ -12,14 +12,19 @@ public class GameController : MonoBehaviour {
             graph.Init();
             GraphView graphView = graph.GetComponent<GraphView>();
             if (graphView != null) {
-                if (minesweeper != null) {
-                    minesweeper.Init(graph, this);
-                    graphView.Init(graph, this);
-                } else {
-                    Debug.Log("GameController Error: No Minesweeper object found");
-                }
+                graphView.Init(graph, this);
             } else {
                 Debug.Log("GameController Error: No graph view is found");
+            }
+
+            if (minesweeper != null) {
+                minesweeper.Init(graph, this);
+            } else {
+                Debug.Log("GameController Error: No Minesweeper object found");
+            }
+
+            if (boardSolver != null) {
+                boardSolver.Init(graph, this);
             }
 
 
@@ -32,18 +37,6 @@ public class GameController : MonoBehaviour {
             //     Debug.LogWarning("GameController Error: start or end nodes are not in bounds");
             // }
         }
-    }
-
-    public Minesweeper GetMinesweeper() {
-        return minesweeper;
-    }
-
-    public BoardSolver GetBoardSolver() {
-        return boardSolver;
-    }
-
-    public UIManager GetUI() {
-        return ui;
     }
 
     public Graph GetGraph() {
