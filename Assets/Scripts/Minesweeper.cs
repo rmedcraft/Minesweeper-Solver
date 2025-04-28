@@ -9,7 +9,8 @@ public class Minesweeper : MonoBehaviour {
     UIManager ui;
     BoardSolver boardSolver;
     bool hasClicked = false; // determines if the player has clicked yet to generate the board on the first click
-    bool isPlaying = true; // doesnt allow user input if the game isnt going on
+    bool won = false;
+    public bool isPlaying = true; // doesnt allow user input if the game isnt going on
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Init(Graph graph, GameController gameController) {
         this.graph = graph;
@@ -45,6 +46,7 @@ public class Minesweeper : MonoBehaviour {
         // player clicked a mine & lost
         if (n.nodeType == NodeType.mine) {
             isPlaying = false;
+            boardSolver.isSolving = false;
             ui.resultText.text = "You Lose!";
             RevealMines();
             return;
@@ -58,8 +60,9 @@ public class Minesweeper : MonoBehaviour {
             RevealNeighbors(n);
         }
 
-        isPlaying = !CheckWin();
-        if (!isPlaying) {
+
+        won = CheckWin();
+        if (won) {
             ui.resultText.text = "You Won!";
         }
     }

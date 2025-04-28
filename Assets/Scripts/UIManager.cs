@@ -48,9 +48,11 @@ public class UIManager : MonoBehaviour {
             if (!gameController.boardSolver.isSolving) {
                 startSolveText.text = "Pause Solving";
                 gameController.boardSolver.isSolving = true;
+                gameController.minesweeper.isPlaying = false;
             } else {
                 startSolveText.text = "Start Solving";
                 gameController.boardSolver.isSolving = false;
+                gameController.minesweeper.isPlaying = true;
             }
         } else {
             Debug.Log("UIManager Error: No GameController Found");
