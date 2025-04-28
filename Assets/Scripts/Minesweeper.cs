@@ -30,9 +30,7 @@ public class Minesweeper : MonoBehaviour {
 
         // ensures the first click isnt a mine
         if (!hasClicked) {
-            int numMines = (int)(graph.GetWidth() * graph.GetHeight() * 0.2);
-
-            graph.GenerateBoard(numMines, n);
+            graph.OnFirstClick(n);
             hasClicked = true;
         }
 

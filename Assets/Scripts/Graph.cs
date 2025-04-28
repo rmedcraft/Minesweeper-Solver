@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Graph : MonoBehaviour {
-    // Translates 1's and 0's from MapData.cs to an array of nodes
     public Node[,] nodes; //Array of nodes
     public List<Node> nodeList = new List<Node>();
-    int nodeIndex = 1;
+    int nodeIndex = 0;
 
     int[,] m_mapData;
     int width = 30;
@@ -33,7 +32,7 @@ public class Graph : MonoBehaviour {
         return height;
     }
 
-    public void GenerateBoard(int mines, Node start) {
+    public void GenerateBoard(int mines) {
         // old solution, O(n) with repeated randomization
         // for (int i = 0; i < mines; i++) {
         //     int randRow = Random.Range(0, width);
@@ -51,11 +50,15 @@ public class Graph : MonoBehaviour {
 
         // new solution, O(n) no repeated randomization
         // this method needs to be really efficient if its being called after the first click
-        Swap(nodeList, 0, nodeList.IndexOf(start));
-        foreach (Node n in start.neighbors) {
-            Swap(nodeList, nodeIndex, nodeList.IndexOf(n, nodeIndex));
-            nodeIndex++;
-        }
+
+        // for (int i = 0; i < mines; i++) {
+        //     int randIndex = Random.Range(nodeIndex, nodeList.Count);
+        //     nodeList[randIndex].nodeType = NodeType.mine;
+        //     Swap(nodeList, nodeIndex, randIndex);
+        //     nodeIndex++;
+        // }
+
+        // final solution, randomizes the full board, then swaps mines when you click
         for (int i = 0; i < mines; i++) {
             int randIndex = Random.Range(nodeIndex, nodeList.Count);
             nodeList[randIndex].nodeType = NodeType.mine;
@@ -70,6 +73,37 @@ public class Graph : MonoBehaviour {
         list[i2] = temp;
     }
 
+    // on the first click, if theres mines where the user clicked, no there isnt
+    public void OnFirstClick(Node start) {
+        if (start.nodeType == NodeType.mine) {
+            // set the node to be open
+            start.nodeType = NodeType.open;
+
+            // find a random node to replace it
+            int randIndex = Random.Range(nodeIndex, nodeList.Count);
+            nodeList[randIndex].nodeType = NodeType.mine;
+
+            // swap them in the list
+            Swap(nodeList, randIndex, nodeList.IndexOf(start));
+        }
+        foreach (Node n in start.neighbors) {
+            // only do anything if the node is a mine
+            if (n.nodeType == NodeType.open) {
+                continue;
+            }
+
+            // set the current node to be open
+            n.nodeType = NodeType.open;
+
+            // find a random mine to replace it
+            int randIndex = Random.Range(nodeIndex, nodeList.Count);
+            nodeList[randIndex].nodeType = NodeType.mine;
+
+            // swap the new mine & the starting node
+            Swap(nodeList, randIndex, nodeList.IndexOf(n));
+        }
+    }
+
 
     public void Init() {
         nodes = new Node[width, height];
@@ -80,6 +114,10 @@ public class Graph : MonoBehaviour {
                 nodeList.Add(nodes[r, c]);
             }
         }
+
+        int numMines = (int)(GetWidth() * GetHeight() * 0.2);
+
+        GenerateBoard(numMines);
 
         // declare the neighbor list
         for (int r = 0; r < width; r++) {

@@ -22,6 +22,11 @@ public class GraphView : MonoBehaviour {
                 nodeView.Init(n, gameController);
                 nodeViews[n.xIndex, n.yIndex] = nodeView;
                 nodeView.ColorNode(closedColor);
+
+                // shows the mines, for debug purposes
+                // if (n.nodeType == NodeType.mine) {
+                //     nodeView.ColorNode(mineColor);
+                // }
             }
         }
     }
