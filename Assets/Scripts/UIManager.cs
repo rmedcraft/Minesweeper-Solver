@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class UIManager : MonoBehaviour {
     public GameController gameController;
     public TextMeshProUGUI resultText;
 
-    // public GameObject startSolveButton;
+    public TMP_Text startSolveText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -44,7 +45,13 @@ public class UIManager : MonoBehaviour {
 
     public void OnStartSearch() {
         if (gameController != null) {
-            StartCoroutine(gameController.boardSolver.SearchRoutine());
+            if (!gameController.boardSolver.isSolving) {
+                startSolveText.text = "Pause Solving";
+                gameController.boardSolver.isSolving = true;
+            } else {
+                startSolveText.text = "Start Solving";
+                gameController.boardSolver.isSolving = false;
+            }
         } else {
             Debug.Log("UIManager Error: No GameController Found");
         }

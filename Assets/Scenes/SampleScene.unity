@@ -410,7 +410,7 @@ MonoBehaviour:
   boardSolver: {fileID: 1713012690}
   minesweeper: {fileID: 1048581215}
   ui: {fileID: 706152671}
-  timeStep: 0.5
+  timeStep: 0.05
 --- !u!4 &580853934
 Transform:
   m_ObjectHideFlags: 0
@@ -460,6 +460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameController: {fileID: 580853933}
   resultText: {fileID: 1556827664}
+  startSolveText: {fileID: 1354507663}
 --- !u!114 &706152672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1213,6 +1214,7 @@ MonoBehaviour:
   frontierColor: {r: 1, g: 0, b: 1, a: 1}
   isComplete: 0
   iterations: 0
+  isSolving: 0
 --- !u!4 &1713012691
 Transform:
   m_ObjectHideFlags: 0

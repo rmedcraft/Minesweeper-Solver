@@ -16,6 +16,8 @@ public class BoardSolver : MonoBehaviour {
     public bool isComplete;
     public int iterations;
 
+    public bool isSolving = false;
+
     Minesweeper minesweeper;
 
     public void Init(Graph graph, GameController gameController) {
@@ -30,11 +32,22 @@ public class BoardSolver : MonoBehaviour {
 
         frontierNodes = new Queue<Node>();
         isComplete = false;
+
+        StartCoroutine(SearchRoutine());
     }
 
     public IEnumerator SearchRoutine(float timeStep = 0.1f) {
         yield return null;
+
+
         while (!isComplete) {
+
+            // paused solve
+            while (!isSolving) {
+                graphView.ColorNodes(frontierNodes.ToList(), graphView.openColor);
+                yield return new WaitForSeconds(timeStep);
+            }
+
             Node node = frontierNodes.Dequeue();
             int mines = node.CountMines();
 
