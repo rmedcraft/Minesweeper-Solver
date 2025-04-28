@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class NodeView : MonoBehaviour {
     public GameObject tile;
-    public float borderSize = 0.01f;
+    float borderSize = 0.1f;
 
     TextMesh text;
     Node node;

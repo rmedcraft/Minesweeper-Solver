@@ -5,7 +5,7 @@ public class GameController : MonoBehaviour {
     public BoardSolver boardSolver;
     public Minesweeper minesweeper;
     public UIManager ui;
-    public float timeStep = 0.1f;
+    public float timeStep = 0.05f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
         if (graph != null) {

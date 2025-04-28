@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour {
     public GameController gameController;
     public TextMeshProUGUI resultText;
 
-    public GameObject startSolveButton;
+    // public GameObject startSolveButton;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start() {
@@ -20,7 +20,6 @@ public class UIManager : MonoBehaviour {
             Camera.main.transform.position = new Vector3(gameController.GetGraph().GetWidth() / 2.0f - 0.5f, 1, gameController.GetGraph().GetHeight() / 2.0f - 0.5f);
             Camera.main.orthographicSize = 1f;
             while (!NodesInsideCamera()) {
-                Debug.Log("here");
                 Camera.main.orthographicSize += 2.0f;
             }
 
@@ -46,6 +45,8 @@ public class UIManager : MonoBehaviour {
     public void OnStartSearch() {
         if (gameController != null) {
             StartCoroutine(gameController.boardSolver.SearchRoutine());
+        } else {
+            Debug.Log("UIManager Error: No GameController Found");
         }
     }
 
