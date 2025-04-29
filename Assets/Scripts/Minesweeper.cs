@@ -9,7 +9,6 @@ public class Minesweeper : MonoBehaviour {
     UIManager ui;
     BoardSolver boardSolver;
     public bool hasClicked = false; // determines if the player has clicked yet to generate the board on the first click
-    bool won = false;
     public bool isPlaying = true; // doesnt allow user input if the game isnt going on
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Init(Graph graph, GameController gameController) {
@@ -52,15 +51,18 @@ public class Minesweeper : MonoBehaviour {
         // player clicked a non-mine & keeps playing
         if (mines != 0 && n.nodeType != NodeType.mine) {
             nview.DrawText(mines.ToString());
-            boardSolver.frontierNodes.Enqueue(n);
+
+            // if the node isnt already in the frontier nodes for the algorithm, put it in there!
+            if (!boardSolver.frontierNodes.Contains(n)) {
+                boardSolver.frontierNodes.Enqueue(n);
+            }
         } else if (mines == 0 && n.nodeType == NodeType.open) {
             // reveal mines surrounding this square
             RevealNeighbors(n);
         }
 
 
-        won = CheckWin();
-        if (won) {
+        if (CheckWin()) {
             ui.resultText.text = "You Won!";
         }
     }

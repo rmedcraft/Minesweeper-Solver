@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour {
         if (gameController != null) {
 
             Camera.main.transform.position = new Vector3(gameController.GetGraph().GetWidth() / 2.0f - 0.5f, 1, gameController.GetGraph().GetHeight() / 2.0f - 0.5f);
+            
             Camera.main.orthographicSize = 1f;
             while (!NodesInsideCamera()) {
                 Camera.main.orthographicSize += 2.0f;

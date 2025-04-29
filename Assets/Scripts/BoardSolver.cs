@@ -14,11 +14,11 @@ public class BoardSolver : MonoBehaviour {
     public Color frontierColor = Color.magenta;
 
     public bool isComplete;
-    public int iterations;
+    public int timeout;
 
     public bool isSolving = false;
 
-    Minesweeper minesweeper;
+    GameController gameController;
 
     public void Init(Graph graph, GameController gameController) {
         if (graph == null || gameController == null) {
@@ -28,11 +28,12 @@ public class BoardSolver : MonoBehaviour {
 
         this.graph = graph;
         this.graphView = graph.GetComponent<GraphView>();
-        this.minesweeper = gameController.minesweeper;
+        this.gameController = gameController;
 
         frontierNodes = new Queue<Node>();
         isComplete = false;
 
+        timeout = 0;
         StartCoroutine(SearchRoutine());
     }
 
@@ -48,14 +49,16 @@ public class BoardSolver : MonoBehaviour {
                 yield return new WaitForSeconds(timeStep);
             }
 
-            if (!minesweeper.hasClicked) {
-                minesweeper.RevealNode(graph.nodeList[Random.Range(0, graph.nodeList.Count)]);
+            if (!gameController.minesweeper.hasClicked) {
+                gameController.minesweeper.RevealNode(graph.nodeList[Random.Range(0, graph.nodeList.Count)]);
                 continue;
             }
 
             Node node = frontierNodes.Dequeue();
+            timeout++;
             int mines = node.CountMines();
 
+            // create lists of every closed, flagged, and open node in the current node's neighbors
             List<Node> closed = new List<Node>();
             List<Node> open = new List<Node>();
             List<Node> flagged = new List<Node>();
@@ -72,14 +75,17 @@ public class BoardSolver : MonoBehaviour {
                 }
             }
 
+
             if (closed.Count + flagged.Count == mines) {
                 foreach (Node n in closed) {
-                    minesweeper.FlagNode(n);
+                    gameController.minesweeper.FlagNode(n);
                 }
+                timeout = 0;
             } else if (flagged.Count == mines) {
                 foreach (Node n in closed) {
-                    minesweeper.RevealNode(n);
+                    gameController.minesweeper.RevealNode(n);
                 }
+                timeout = 0;
             } else {
                 frontierNodes.Enqueue(node);
             }
@@ -88,6 +94,14 @@ public class BoardSolver : MonoBehaviour {
             nodeView.ColorNode(frontierColor);
             yield return new WaitForSeconds(timeStep);
             nodeView.ColorNode(nodeView.viewType == ViewType.open ? graphView.openColor : graphView.closedColor);
+
+            // determines if the algorithm goes a full loop without discovering anything new
+            if (timeout >= frontierNodes.Count) {
+                isSolving = false;
+                gameController.minesweeper.isPlaying = true;
+                gameController.ui.startSolveText.text = "Start Solving";
+                timeout = 0;
+            }
         }
     }
 }
